@@ -12890,91 +12890,147 @@
         </div>
     </div>
 
-    <script>
-        let filterActive = false;
+<script>
+    let filterActive = false;
+    
+    // Ключ для хранения в localStorage
+    const STORAGE_KEY = 'pathfinder-spells-checked';
+    
+    function toggleSpell(element) {
+        const expandable = element.parentElement.querySelector('.spell-expandable');
         
-        function toggleSpell(element) {
-            const expandable = element.parentElement.querySelector('.spell-expandable');
-            
-            document.querySelectorAll('.spell-expandable.expanded').forEach(item => {
-                if (item !== expandable) {
-                    item.classList.remove('expanded');
+        document.querySelectorAll('.spell-expandable.expanded').forEach(item => {
+            if (item !== expandable) {
+                item.classList.remove('expanded');
+            }
+        });
+        
+        if (expandable.classList.contains('expanded')) {
+            expandable.classList.remove('expanded');
+        } else {
+            expandable.classList.add('expanded');
+        }
+    }
+    
+    function toggleCheck(button) {
+        button.classList.toggle('checked');
+        
+        // Сохраняем ВСЕ отмеченные заклинания
+        saveAllCheckedSpells();
+        
+        // Если фильтр активен - обновляем отображение
+        if (filterActive) {
+            hideUncheckedSpells();
+        }
+    }
+    
+    // НОВАЯ ФУНКЦИЯ: сохраняет все отмеченные заклинания в localStorage
+    function saveAllCheckedSpells() {
+        const checkedSpells = [];
+        document.querySelectorAll('.spell-card').forEach(card => {
+            const checkButton = card.querySelector('.check-button');
+            const spellName = card.querySelector('.spell-title').textContent.trim();
+            if (checkButton.classList.contains('checked')) {
+                checkedSpells.push(spellName);
+            }
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedSpells));
+    }
+    
+    // НОВАЯ ФУНКЦИЯ: загружает отмеченные заклинания из localStorage
+    function loadCheckedSpells() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return;
+        
+        try {
+            const checkedSpells = JSON.parse(saved);
+            document.querySelectorAll('.spell-card').forEach(card => {
+                const checkButton = card.querySelector('.check-button');
+                const spellName = card.querySelector('.spell-title').textContent.trim();
+                if (checkedSpells.includes(spellName)) {
+                    checkButton.classList.add('checked');
                 }
             });
-            
-            if (expandable.classList.contains('expanded')) {
-                expandable.classList.remove('expanded');
+        } catch (e) {
+            console.error('Ошибка загрузки сохраненных заклинаний:', e);
+        }
+    }
+    
+    function toggleFilter() {
+        filterActive = !filterActive;
+        const filterButton = document.getElementById('filterButton');
+        const filterText = filterButton.querySelector('span');
+        const filterIcon = filterButton.querySelector('i');
+        
+        if (filterActive) {
+            filterText.textContent = 'Все заклинания';
+            filterIcon.className = 'fas fa-eye';
+            filterButton.classList.add('filter-active');
+            hideUncheckedSpells();
+        } else {
+            filterText.textContent = 'Отмеченные';
+            filterIcon.className = 'fas fa-filter';
+            filterButton.classList.remove('filter-active');
+            showAllSpells();
+        }
+        
+        // Сохраняем состояние фильтра
+        localStorage.setItem('filter-active', filterActive);
+    }
+    
+    function hideUncheckedSpells() {
+        document.querySelectorAll('.spell-card').forEach(card => {
+            const checkButton = card.querySelector('.check-button');
+            if (!checkButton.classList.contains('checked')) {
+                card.classList.add('hidden');
             } else {
-                expandable.classList.add('expanded');
+                card.classList.remove('hidden');
             }
-        }
-        
-        function toggleCheck(button) {
-            button.classList.toggle('checked');
-            
-            const spellCard = button.closest('.spell-card');
-            const spellName = spellCard.querySelector('.spell-title').textContent.trim();
-            localStorage.setItem(`spell-${spellName}`, button.classList.contains('checked'));
-        }
-        
-        function toggleFilter() {
-            filterActive = !filterActive;
+        });
+    }
+    
+    function showAllSpells() {
+        document.querySelectorAll('.spell-card').forEach(card => {
+            card.classList.remove('hidden');
+        });
+    }
+    
+    // ВОССТАНОВЛЕНИЕ СОСТОЯНИЯ ФИЛЬТРА ПРИ ЗАГРУЗКЕ
+    function loadFilterState() {
+        const savedFilter = localStorage.getItem('filter-active');
+        if (savedFilter === 'true') {
+            // Не вызываем toggleFilter(), чтобы не сработала анимация и двойное сохранение
+            filterActive = true;
             const filterButton = document.getElementById('filterButton');
             const filterText = filterButton.querySelector('span');
             const filterIcon = filterButton.querySelector('i');
             
-            if (filterActive) {
-                filterText.textContent = 'Все заклинания';
-                filterIcon.className = 'fas fa-eye';
-                filterButton.classList.add('filter-active');
-                hideUncheckedSpells();
-            } else {
-                filterText.textContent = 'Только отмеченные';
-                filterIcon.className = 'fas fa-filter';
-                filterButton.classList.remove('filter-active');
-                showAllSpells();
-            }
+            filterText.textContent = 'Все заклинания';
+            filterIcon.className = 'fas fa-eye';
+            filterButton.classList.add('filter-active');
+            hideUncheckedSpells();
         }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Загружаем сохраненные галочки
+        loadCheckedSpells();
         
-        function hideUncheckedSpells() {
-            document.querySelectorAll('.spell-card').forEach(card => {
-                const checkButton = card.querySelector('.check-button');
-                if (!checkButton.classList.contains('checked')) {
-                    card.classList.add('hidden');
-                } else {
-                    card.classList.remove('hidden');
-                }
+        // Загружаем состояние фильтра
+        loadFilterState();
+        
+        // Назначаем обработчик на кнопку фильтра
+        document.getElementById('filterButton').addEventListener('click', toggleFilter);
+    });
+    
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.spell-card') && !event.target.closest('.filter-button')) {
+            document.querySelectorAll('.spell-expandable.expanded').forEach(item => {
+                item.classList.remove('expanded');
             });
         }
-        
-        function showAllSpells() {
-            document.querySelectorAll('.spell-card').forEach(card => {
-                card.classList.remove('hidden');
-            });
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.check-button').forEach(button => {
-                const spellCard = button.closest('.spell-card');
-                const spellName = spellCard.querySelector('.spell-title').textContent.trim();
-                const isChecked = localStorage.getItem(`spell-${spellName}`) === 'true';
-                
-                if (isChecked) {
-                    button.classList.add('checked');
-                }
-            });
-            
-            document.getElementById('filterButton').addEventListener('click', toggleFilter);
-        });
-        
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.spell-card') && !event.target.closest('.filter-button')) {
-                document.querySelectorAll('.spell-expandable.expanded').forEach(item => {
-                    item.classList.remove('expanded');
-                });
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
 <style>
