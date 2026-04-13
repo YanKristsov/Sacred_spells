@@ -481,7 +481,52 @@
             .content-wrapper {
                 margin-top: 50px;
             }
-        }
+		
+			.expand-all-button {
+		    position: fixed;
+		    top: 20px;
+		    left: 180px;
+		    background-color: #e2e8f0;
+		    color: #475569;
+		    border: 2px solid #cbd5e1;
+		    padding: 8px 16px;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    font-weight: 600;
+		    font-size: 14px;
+		    transition: all 0.2s ease;
+		    display: inline-flex;
+		    align-items: center;
+		    gap: 8px;
+		    z-index: 1000;
+		    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+		
+		.expand-all-button:hover {
+		    background-color: #cbd5e1;
+		    border-color: #94a3b8;
+		    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		}
+		
+		.expand-all-button.expanded-all {
+		    background-color: #94a3b8;
+		    color: white;
+		    border-color: #64748b;
+		}
+		
+		.expand-all-button.expanded-all:hover {
+		    background-color: #64748b;
+		    border-color: #475569;
+		}
+		
+		@media (max-width: 400px) {
+		    .expand-all-button {
+		        left: 120px;
+		        padding: 6px 10px;
+		        font-size: 13px;
+		    }
+		}
+			
     </style>
 </head>
 
@@ -490,6 +535,11 @@
         <i class="fas fa-filter"></i>
         <span>Отмеченные</span>
     </button>
+
+	<button class="expand-all-button" id="expandAllButton">
+    <i class="fas fa-chevron-down"></i>
+    <span>Раскрыть все</span>
+</button>
     
     <div class="content-wrapper">
 
@@ -13030,6 +13080,55 @@
             });
         }
     });
+
+	// Функционал кнопки "Раскрыть все"
+let allExpanded = false;
+const expandButton = document.getElementById('expandAllButton');
+const expandText = expandButton.querySelector('span');
+const expandIcon = expandButton.querySelector('i');
+
+function expandAllSpells() {
+    document.querySelectorAll('.spell-expandable').forEach(expandable => {
+        expandable.classList.add('expanded');
+    });
+}
+
+function collapseAllSpells() {
+    document.querySelectorAll('.spell-expandable').forEach(expandable => {
+        expandable.classList.remove('expanded');
+    });
+}
+
+expandButton.addEventListener('click', function() {
+    allExpanded = !allExpanded;
+    
+    if (allExpanded) {
+        expandAllSpells();
+        expandText.textContent = 'Свернуть все';
+        expandIcon.className = 'fas fa-chevron-up';
+        expandButton.classList.add('expanded-all');
+    } else {
+        collapseAllSpells();
+        expandText.textContent = 'Раскрыть все';
+        expandIcon.className = 'fas fa-chevron-down';
+        expandButton.classList.remove('expanded-all');
+    }
+});
+
+// Если пользователь вручную сворачивает все карточки - сбрасываем состояние кнопки
+document.addEventListener('click', function(event) {
+    if (allExpanded && event.target.closest('.spell-header')) {
+        // Проверяем, остались ли раскрытые карточки
+        const expandedCount = document.querySelectorAll('.spell-expandable.expanded').length;
+        if (expandedCount === 0) {
+            allExpanded = false;
+            expandText.textContent = 'Раскрыть все';
+            expandIcon.className = 'fas fa-chevron-down';
+            expandButton.classList.remove('expanded-all');
+        }
+    }
+});
+	
 </script>
 </body>
 </html>
