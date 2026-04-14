@@ -417,6 +417,46 @@
             border-color: #475569;
         }
 
+	.expand-all-button {
+    	position: fixed;
+   	top: 20px;
+    	left: 180px;
+    	background-color: #e2e8f0;
+    	color: #475569;
+    	border: 2px solid #cbd5e1;
+    	padding: 8px 16px;
+    	border-radius: 6px;
+    	cursor: pointer;
+    	font-weight: 600;
+    	font-size: 14px;
+    	transition: all 0.2s ease;
+    	display: inline-flex;
+    	align-items: center;
+    	gap: 8px;
+    	z-index: 1000;
+    	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.expand-all-button:hover {
+    	background-color: #cbd5e1;
+    	border-color: #94a3b8;
+    	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	.expand-all-button.expanded-all {
+    	background-color: #94a3b8;
+    	color: white;
+    	border-color: #64748b;
+	}
+
+	@media (max-width: 400px) {
+    	.expand-all-button {
+        left: 120px;
+        padding: 6px 10px;
+        font-size: 13px;
+    	}
+	}
+
         .content-wrapper {
             margin-top: 60px;
             width: 100%;
@@ -491,6 +531,11 @@
         <span>Отмеченные</span>
     </button>
     
+	<button class="expand-all-button" id="expandAllButton">
+    	<i class="fas fa-chevron-down"></i>
+    	<span>Раскрыть все</span>
+	</button>
+
     <div class="content-wrapper">
 
     <header>
@@ -805,7 +850,7 @@
                             <i class="fas fa-check"></i>
                         </div>
                     </div>
-                    <div class="spell-focus">Круг 4</div>
+                    <div class="spell-focus">Круг 2</div>
                 </div>
                 
                 <div class="spell-description">
@@ -3095,7 +3140,7 @@
                         <div class="spell-effect">
                             <i class="fas fa-quote-left" style="color: #94a3b8; margin-right: 5px;"></i>
                             В то время как божества ревностно оберегают своих самых могущественных служителей от заклинаний призыва от тех, кто не пропитан верой, это заклинание позволяет вам призывать обитателя Внешней Сферы как с позволения божества, так и без него. Вы призываете небожителя, наблюдателя или беса, уровень которого равен -1, чтобы он сражался за вас. В качестве альтернативы, вы можете выбрать служителем магическое животное Внешней Сферы. Это животное на ваш выбор Орел (Eagle), Сторожевой пес (Guard Dog) или Ворон (Raven). Он получает мировоззрение соответствующее вашему божеству (или вашему, если у вас нет божества), и обладает следующими признаками в зависимости от полученного мировоззрения: небожитель для принципиального, наблюдатель для нейтрального или бес для злого.
-                            Вы не можете призывать существо, если оно противоположно мировоззрению вашего божества хотя бы по одной из осей мировоззрения (или вашего мировоззрения, если вы не последователь божества). Например, если ваше божество принципиально доброе, то вы не можете призвать хаотичное или злое существо. Мастер, может решить, что божества имеют ограничения на определенные виды существ, даже если их мировоззрение не диаметрально противоположное. Например, Фаразма (Pharasma) ограничивала бы призыв сахкилов.
+                            Вы не можете призывать существо, если оно противоположно мировоззрению вашего божества хотя бы по одной из осей мировоззрения (или вашего мировоззрения, если вы не последователь божества). Например, если ваше божество принципиально доброе, то вы не можете призвать хаотичное или злое существо. Мастер, может решить, что божества имеют ограничения на определенные виды существ, даже если их мировоззрение не диаметрально противоположное. Например, Фаразма ограничивала бы призыв сахкилов.
                             Усиление этого заклинания увеличивает максимальный уровень существа, которого вы можете призвать и может добавить дополнительных служителей-животных, которые во всем остальном действуют как орел, сторожевой пес и ворон.
                         </div>
                         
@@ -10332,7 +10377,7 @@
                         
                         <div class="spell-effect">
                             <i class="fas fa-quote-left" style="color: #94a3b8; margin-right: 5px;"></i>
-                            Вы пытаетесь вызвать душу мертвого существа, что требует присутствия относительно неповрежденного тела существа. Существо должно было умереть в течение последних 3 дней. Если Фаразма (Pharasma) решила, что время существа пришло (по решению Мастера), или если существо не желает вернуться к жизни, это заклинание автоматически проваливается, но при его сотворении алмазы не тратятся.
+                            Вы пытаетесь вызвать душу мертвого существа, что требует присутствия относительно неповрежденного тела существа. Существо должно было умереть в течение последних 3 дней. Если Фаразма решила, что время существа пришло (по решению Мастера), или если существо не желает вернуться к жизни, это заклинание автоматически проваливается, но при его сотворении алмазы не тратятся.
                             <br><br>
                             Если заклинание прошло успешно, существо возвращается к жизни с 1 ОЗ, без подготовленных заклинаний или доступных слотов заклинаний, без очков в запасе или других ежедневных ресурсов и с любыми долгосрочными ослаблениями старого тела. Время проведенное в Могильнике делает цель временно ослабленной, давая ей состояния неуклюжесть 2, истощен 2 и ослаблен 2 на 1 неделю; эти состояния нельзя убрать или снизить никаким способом, пока не пройдет неделя. Из-за времени, проведенного в загробной жизни, существо также меняется насовсем, например, происходит небольшое изменение личности, появляется белая прядь в волосах или новое странное родимое пятно.
                             <i class="fas fa-quote-right" style="color: #94a3b8; margin-left: 5px;"></i>
@@ -12892,39 +12937,43 @@
 
 <script>
     let filterActive = false;
+    let allExpanded = false;
     
-    // Ключ для хранения в localStorage
     const STORAGE_KEY = 'pathfinder-spells-checked';
     
     function toggleSpell(element) {
         const expandable = element.parentElement.querySelector('.spell-expandable');
-        
-        document.querySelectorAll('.spell-expandable.expanded').forEach(item => {
-            if (item !== expandable) {
-                item.classList.remove('expanded');
-            }
-        });
         
         if (expandable.classList.contains('expanded')) {
             expandable.classList.remove('expanded');
         } else {
             expandable.classList.add('expanded');
         }
+        
+        // Сбрасываем состояние кнопки "Раскрыть все", если все карточки свернуты
+        if (allExpanded) {
+            const visibleExpanded = document.querySelectorAll('.spell-card:not(.hidden) .spell-expandable.expanded').length;
+            const visibleTotal = document.querySelectorAll('.spell-card:not(.hidden) .spell-expandable').length;
+            if (visibleExpanded === 0) {
+                allExpanded = false;
+                const expandButton = document.getElementById('expandAllButton');
+                expandButton.querySelector('span').textContent = 'Раскрыть все';
+                expandButton.querySelector('i').className = 'fas fa-chevron-down';
+                expandButton.classList.remove('expanded-all');
+            }
+        }
     }
     
     function toggleCheck(button) {
         button.classList.toggle('checked');
-        
-        // Сохраняем ВСЕ отмеченные заклинания
         saveAllCheckedSpells();
-        
-        // Если фильтр активен - обновляем отображение
         if (filterActive) {
             hideUncheckedSpells();
         }
+        // Сбрасываем состояние раскрытия при изменении галочек
+        resetExpandButton();
     }
     
-    // НОВАЯ ФУНКЦИЯ: сохраняет все отмеченные заклинания в localStorage
     function saveAllCheckedSpells() {
         const checkedSpells = [];
         document.querySelectorAll('.spell-card').forEach(card => {
@@ -12937,11 +12986,9 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedSpells));
     }
     
-    // НОВАЯ ФУНКЦИЯ: загружает отмеченные заклинания из localStorage
     function loadCheckedSpells() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (!saved) return;
-        
         try {
             const checkedSpells = JSON.parse(saved);
             document.querySelectorAll('.spell-card').forEach(card => {
@@ -12952,7 +12999,7 @@
                 }
             });
         } catch (e) {
-            console.error('Ошибка загрузки сохраненных заклинаний:', e);
+            console.error('Ошибка загрузки:', e);
         }
     }
     
@@ -12973,9 +13020,8 @@
             filterButton.classList.remove('filter-active');
             showAllSpells();
         }
-        
-        // Сохраняем состояние фильтра
         localStorage.setItem('filter-active', filterActive);
+        resetExpandButton();
     }
     
     function hideUncheckedSpells() {
@@ -12995,39 +13041,70 @@
         });
     }
     
-    // ВОССТАНОВЛЕНИЕ СОСТОЯНИЯ ФИЛЬТРА ПРИ ЗАГРУЗКЕ
     function loadFilterState() {
         const savedFilter = localStorage.getItem('filter-active');
         if (savedFilter === 'true') {
-            // Не вызываем toggleFilter(), чтобы не сработала анимация и двойное сохранение
             filterActive = true;
             const filterButton = document.getElementById('filterButton');
-            const filterText = filterButton.querySelector('span');
-            const filterIcon = filterButton.querySelector('i');
-            
-            filterText.textContent = 'Все заклинания';
-            filterIcon.className = 'fas fa-eye';
+            filterButton.querySelector('span').textContent = 'Все заклинания';
+            filterButton.querySelector('i').className = 'fas fa-eye';
             filterButton.classList.add('filter-active');
             hideUncheckedSpells();
         }
     }
     
+    function resetExpandButton() {
+        allExpanded = false;
+        const expandButton = document.getElementById('expandAllButton');
+        expandButton.querySelector('span').textContent = 'Раскрыть все';
+        expandButton.querySelector('i').className = 'fas fa-chevron-down';
+        expandButton.classList.remove('expanded-all');
+    }
+    
+    function expandVisibleSpells() {
+        document.querySelectorAll('.spell-card:not(.hidden) .spell-expandable').forEach(expandable => {
+            expandable.classList.add('expanded');
+        });
+    }
+    
+    function collapseVisibleSpells() {
+        document.querySelectorAll('.spell-card:not(.hidden) .spell-expandable').forEach(expandable => {
+            expandable.classList.remove('expanded');
+        });
+    }
+    
+    function toggleExpandAll() {
+        const expandButton = document.getElementById('expandAllButton');
+        const expandText = expandButton.querySelector('span');
+        const expandIcon = expandButton.querySelector('i');
+        
+        if (allExpanded) {
+            collapseVisibleSpells();
+            expandText.textContent = 'Раскрыть все';
+            expandIcon.className = 'fas fa-chevron-down';
+            expandButton.classList.remove('expanded-all');
+        } else {
+            expandVisibleSpells();
+            expandText.textContent = 'Свернуть все';
+            expandIcon.className = 'fas fa-chevron-up';
+            expandButton.classList.add('expanded-all');
+        }
+        allExpanded = !allExpanded;
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
-        // Загружаем сохраненные галочки
         loadCheckedSpells();
-        
-        // Загружаем состояние фильтра
         loadFilterState();
-        
-        // Назначаем обработчик на кнопку фильтра
         document.getElementById('filterButton').addEventListener('click', toggleFilter);
+        document.getElementById('expandAllButton').addEventListener('click', toggleExpandAll);
     });
     
     document.addEventListener('click', function(event) {
-        if (!event.target.closest('.spell-card') && !event.target.closest('.filter-button')) {
+        if (!event.target.closest('.spell-card') && !event.target.closest('.filter-button') && !event.target.closest('.expand-all-button')) {
             document.querySelectorAll('.spell-expandable.expanded').forEach(item => {
                 item.classList.remove('expanded');
             });
+            resetExpandButton();
         }
     });
 </script>
