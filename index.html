@@ -12960,6 +12960,17 @@
         } else {
             expandable.classList.add('expanded');
         }
+        
+        // Если кнопка "Раскрыть все" активна, но пользователь свернул все вручную
+        if (allExpanded) {
+            const expandedCount = document.querySelectorAll('.spell-expandable.expanded').length;
+            if (expandedCount === 0) {
+                allExpanded = false;
+                expandText.textContent = 'Раскрыть все';
+                expandIcon.className = 'fas fa-chevron-down';
+                expandButton.classList.remove('expanded-all');
+            }
+        }
     }
     
     function toggleCheck(button) {
@@ -12974,7 +12985,7 @@
         }
     }
     
-    // НОВАЯ ФУНКЦИЯ: сохраняет все отмеченные заклинания в localStorage
+    // Сохраняет все отмеченные заклинания в localStorage
     function saveAllCheckedSpells() {
         const checkedSpells = [];
         document.querySelectorAll('.spell-card').forEach(card => {
@@ -12987,7 +12998,7 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedSpells));
     }
     
-    // НОВАЯ ФУНКЦИЯ: загружает отмеченные заклинания из localStorage
+    // Загружает отмеченные заклинания из localStorage
     function loadCheckedSpells() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (!saved) return;
@@ -13045,11 +13056,10 @@
         });
     }
     
-    // ВОССТАНОВЛЕНИЕ СОСТОЯНИЯ ФИЛЬТРА ПРИ ЗАГРУЗКЕ
+    // Восстановление состояния фильтра при загрузке
     function loadFilterState() {
         const savedFilter = localStorage.getItem('filter-active');
         if (savedFilter === 'true') {
-            // Не вызываем toggleFilter(), чтобы не сработала анимация и двойное сохранение
             filterActive = true;
             const filterButton = document.getElementById('filterButton');
             const filterText = filterButton.querySelector('span');
@@ -13062,6 +13072,49 @@
         }
     }
     
+    // ---------- НОВЫЙ КОД ДЛЯ КНОПКИ "РАСКРЫТЬ ВСЕ" ----------
+    let allExpanded = false;
+    let expandButton, expandText, expandIcon;
+    
+    function expandAllSpells() {
+        document.querySelectorAll('.spell-expandable').forEach(expandable => {
+            expandable.classList.add('expanded');
+        });
+    }
+    
+    function collapseAllSpells() {
+        document.querySelectorAll('.spell-expandable').forEach(expandable => {
+            expandable.classList.remove('expanded');
+        });
+    }
+    
+    function initExpandButton() {
+        expandButton = document.getElementById('expandAllButton');
+        if (!expandButton) {
+            console.error('Кнопка "Раскрыть все" не найдена!');
+            return;
+        }
+        expandText = expandButton.querySelector('span');
+        expandIcon = expandButton.querySelector('i');
+        
+        expandButton.addEventListener('click', function() {
+            allExpanded = !allExpanded;
+            
+            if (allExpanded) {
+                expandAllSpells();
+                expandText.textContent = 'Свернуть все';
+                expandIcon.className = 'fas fa-chevron-up';
+                expandButton.classList.add('expanded-all');
+            } else {
+                collapseAllSpells();
+                expandText.textContent = 'Раскрыть все';
+                expandIcon.className = 'fas fa-chevron-down';
+                expandButton.classList.remove('expanded-all');
+            }
+        });
+    }
+    // ---------- КОНЕЦ НОВОГО КОДА ----------
+    
     document.addEventListener('DOMContentLoaded', function() {
         // Загружаем сохраненные галочки
         loadCheckedSpells();
@@ -13071,6 +13124,9 @@
         
         // Назначаем обработчик на кнопку фильтра
         document.getElementById('filterButton').addEventListener('click', toggleFilter);
+        
+        // Инициализируем кнопку "Раскрыть все"
+        initExpandButton();
     });
     
     document.addEventListener('click', function(event) {
@@ -13080,55 +13136,6 @@
             });
         }
     });
-
-// Функционал кнопки "Раскрыть все"
-let allExpanded = false;
-const expandButton = document.getElementById('expandAllButton');
-const expandText = expandButton.querySelector('span');
-const expandIcon = expandButton.querySelector('i');
-
-function expandAllSpells() {
-    document.querySelectorAll('.spell-expandable').forEach(expandable => {
-        expandable.classList.add('expanded');
-    });
-}
-
-function collapseAllSpells() {
-    document.querySelectorAll('.spell-expandable').forEach(expandable => {
-        expandable.classList.remove('expanded');
-    });
-}
-
-expandButton.addEventListener('click', function() {
-    allExpanded = !allExpanded;
-    
-    if (allExpanded) {
-        expandAllSpells();
-        expandText.textContent = 'Свернуть все';
-        expandIcon.className = 'fas fa-chevron-up';
-        expandButton.classList.add('expanded-all');
-    } else {
-        collapseAllSpells();
-        expandText.textContent = 'Раскрыть все';
-        expandIcon.className = 'fas fa-chevron-down';
-        expandButton.classList.remove('expanded-all');
-    }
-});
-
-// Если пользователь вручную сворачивает все карточки - сбрасываем состояние кнопки
-document.addEventListener('click', function(event) {
-    if (allExpanded && event.target.closest('.spell-header')) {
-        // Проверяем, остались ли раскрытые карточки
-        const expandedCount = document.querySelectorAll('.spell-expandable.expanded').length;
-        if (expandedCount === 0) {
-            allExpanded = false;
-            expandText.textContent = 'Раскрыть все';
-            expandIcon.className = 'fas fa-chevron-down';
-            expandButton.classList.remove('expanded-all');
-        }
-    }
-});
-	
 </script>
 </body>
 </html>
